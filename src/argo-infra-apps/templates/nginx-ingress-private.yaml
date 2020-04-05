@@ -1,0 +1,26 @@
+{{- if .Values.nginx_ingress_private.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Release.Name }}-nginx-ingress-private
+  namespace: {{ .Values.general.namespace }}
+{{- if .Values.nginx_ingress_private.finalizer.enabled }}
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+{{- end }}
+spec:
+  destination:
+    namespace: {{ .Values.general.nginx.namespace }}
+    server: {{ .Values.general.destination.server }}
+  project: default
+  source:
+    chart: {{ .Values.general.nginx.source.chart }}
+    repoURL: {{ .Values.general.nginx.source.repoURL }}
+    targetRevision: {{ .Values.general.nginx.source.targetRevision }}
+    helm:
+      values: |
+{{ toYaml .Values.nginx_ingress_private.spec | indent 8 }}
+  syncPolicy:
+    automated:
+      prune: true
+{{- end }}

@@ -1,0 +1,26 @@
+{{- if .Values.argo.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Release.Name }}-argocd
+  namespace: {{ .Values.general.namespace }}
+{{- if .Values.argo.finalizer.enabled }}
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+{{- end }}
+spec:
+  destination:
+    namespace: {{ .Values.argo.namespace }}
+    server: {{ .Values.general.destination.server }}
+  project: default
+  source:
+    chart: {{ .Values.argo.source.chart }}
+    repoURL: {{ .Values.argo.source.repoURL }}
+    targetRevision: {{ .Values.argo.source.targetRevision }}
+    helm:
+      values: |
+{{ toYaml .Values.argo.spec | indent 8 }}
+  syncPolicy:
+    automated:
+      prune: true
+{{- end }}

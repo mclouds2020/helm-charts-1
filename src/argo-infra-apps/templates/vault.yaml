@@ -1,0 +1,26 @@
+{{- if .Values.vault.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Release.Name }}-vault
+  namespace: {{ .Values.general.namespace }}
+{{- if .Values.vault.finalizer.enabled }}
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+{{- end }}
+spec:
+  destination:
+    namespace: {{ .Values.vault.namespace }}
+    server: {{ .Values.general.destination.server }}
+  project: default
+  source:
+    path: {{ .Values.vault.source.path }}
+    repoURL: {{ .Values.vault.source.repoURL }}
+    targetRevision: {{ .Values.vault.source.targetRevision }}
+    helm:
+      values: |
+{{ toYaml .Values.vault.spec | indent 8 }}
+  syncPolicy:
+    automated:
+      prune: true
+{{- end }}

@@ -1,0 +1,51 @@
+{{- if .Values.cert_manager.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Release.Name }}-cert-manager
+  namespace: {{ .Values.general.namespace }}
+{{- if .Values.cert_manager.finalizer.enabled }}
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+{{- end }}
+spec:
+  destination:
+    namespace: {{ .Values.cert_manager.namespace }}
+    server: {{ .Values.general.destination.server }}
+  project: default
+  source:
+    chart: {{ .Values.cert_manager.source.chart }}
+    repoURL: {{ .Values.cert_manager.source.repoURL }}
+    targetRevision: {{ .Values.cert_manager.source.targetRevision }}
+    helm:
+      values: |
+{{ toYaml .Values.cert_manager.spec | indent 8 }}
+  syncPolicy:
+    automated:
+      prune: true
+{{- end }}
+---
+{{- if .Values.cert_manager.enabled }}
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: {{ .Values.cert_manager.issuer.name }}
+spec:
+  acme:
+    # Email address used for ACME registration and communication about issues/certificate expiration
+    email: {{ .Values.cert_manager.issuer.email }}
+    # The ACME server URL
+    server: {{ .Values.cert_manager.issuer.server }}
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: {{ .Values.cert_manager.issuer.name }}-acme-issuer-account-key
+    solvers:
+    - dns01:
+        route53:
+          accessKeyID: {{ .Values.cert_manager.issuer.aws.accessKeyID }}
+          hostedZoneID: {{ .Values.cert_manager.issuer.aws.hostedZoneID }}
+          region: {{ .Values.cert_manager.issuer.aws.region }}
+          secretAccessKeySecretRef:
+            name: {{ .Values.cert_manager.issuer.aws.secretAccessKeySecretRef.name }}
+            key: {{ .Values.cert_manager.issuer.aws.secretAccessKeySecretRef.key }}
+{{- end }}

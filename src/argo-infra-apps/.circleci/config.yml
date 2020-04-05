@@ -1,0 +1,61 @@
+# https://circleci.com/docs/2.0/configuration-reference/
+version: 2
+jobs:
+  build:
+    working_directory: ~/project
+    docker:
+      - image: alpine/helm:3.1.2
+    steps:
+      - checkout
+      - run:
+          name: Create a directory for the package
+          command: mkdir /tmp/chart_dir
+      - run:
+          name: Package the chart
+          command: helm package ~/project
+          working_directory: /tmp/chart_dir
+      - run:
+          name: Name?
+          command: |
+            echo $(ls chart_dir | cut -d . -f1-3 )
+          working_directory: /tmp
+      - save_cache:
+          paths:
+            - /tmp/chart_dir
+          key: chart_dir
+
+  upload:
+    docker:
+      - image: circleci/golang:1.14.1
+    steps:
+      - restore_cache:
+          key: chart_dir
+      - run:
+          name: Clone the Helm charts repository :-/
+          command: |
+            mkdir ~/.ssh
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+            git clone git@github.com:mkorejo/charts_repo.git /tmp/charts_repo
+      - run:
+          command: mv /tmp/chart_dir/*.tgz /tmp/charts_repo
+      - run:
+          name: Commit and push
+          command: |
+            git config --global user.email "infra-apps-uploader@blackhole.net"
+            git config --global user.name "infra-apps Uploader"
+            git add *.tgz
+            git commit -m "CircleCI Helm chart upload"
+            git push
+          working_directory: /tmp/charts_repo
+
+workflows:
+  version: 2
+  build_and_upload:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: master
+      - upload:
+          requires:
+            - build

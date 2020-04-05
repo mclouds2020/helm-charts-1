@@ -1,0 +1,339 @@
+general:
+  destination:
+    server: https://kubernetes.default.svc
+  # This is the namespace where the Application resources will live, typically the same where Argo CD is running.
+  namespace: argocd
+  nginx:
+    namespace: nginx-ingress
+    source:
+      chart: nginx-ingress
+      repoURL: https://kubernetes-charts.storage.googleapis.com/
+      targetRevision: 1.29.3
+
+argo:
+  enabled: false
+  # If deploying into kubernetes.default.svc, this namespace should be different than general.namespace.
+  namespace: argocd-local
+  source:
+    chart: argo-cd
+    repoURL: https://argoproj.github.io/argo-helm
+    targetRevision: 1.6.3
+  finalizer:
+    enabled: true
+  spec:
+    ingress:
+      enabled: true
+      annotations:
+        nginx.ingress.kubernetes.io/configuration-snippet: |
+          proxy_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+          grpc_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+        kubernetes.io/ingress.class: "nginx-private"
+        cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      hosts:
+      - argocd-sre.gke.some-domain.com
+      tls:
+      - secretName: argocd-tls
+        hosts:
+        - argocd-sre.gke.some-domain.com
+    installCRDs: false
+
+cert_manager:
+  enabled: true
+  namespace: cert-manager
+  source:
+    chart: cert-manager
+    repoURL: https://charts.jetstack.io
+    targetRevision: v0.12.0
+  finalizer:
+    enabled: true
+  issuer:
+    name: letsencrypt-prod
+    email: mkorejo@some-domain.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    aws:
+      accessKeyID:
+      hostedZoneID:
+      region: us-east-1
+      secretAccessKeySecretRef:
+        name: route53-credentials
+        key: route53-credentials
+  spec:
+    global:
+      leaderElection:
+        namespace: cert-manager
+      rbac:
+        create: true
+    nodeSelector:
+      cloud.google.com/gke-nodepool: infra-components
+    tolerations:
+    - effect: NoSchedule
+      key: infra
+      operator: Equal
+      value: "true"
+    webhook:
+      enabled: true
+      nodeSelector:
+        cloud.google.com/gke-nodepool: infra-components
+      tolerations:
+      - effect: NoSchedule
+        key: infra
+        operator: Equal
+        value: "true"
+    cainjector:
+      image:
+        tag: v0.12.0
+      nodeSelector:
+        cloud.google.com/gke-nodepool: infra-components
+      tolerations:
+      - effect: NoSchedule
+        key: infra
+        operator: Equal
+        value: "true"
+
+external_dns:
+  enabled: true
+  namespace: external-dns
+  source:
+    chart: external-dns
+    repoURL: https://kubernetes-charts.storage.googleapis.com/
+    targetRevision: 2.14.3
+  finalizer:
+    enabled: true
+  spec:
+    aws:
+      credentials:
+        accessKey: AKIASOSFYK2QV4KSMME2
+        secretKey:
+    domainFilters:
+    - some-domain.com
+    provider: aws
+    rbac:
+      create: true
+    updateStatus: true
+    nodeSelector:
+      cloud.google.com/gke-nodepool: infra-components
+    tolerations:
+    - effect: NoSchedule
+      key: infra
+      operator: Equal
+      value: "true"
+
+nginx_ingress_private:
+  enabled: true
+  finalizer:
+    enabled: true
+  spec:
+    controller:
+      autoscaling:
+        enabled: true
+        minReplicas: 2
+        targetCPUUtilizationPercentage: 60
+        targetMemoryUtilizationPercentage: 60
+      extraArgs:
+        enable-ssl-passthrough: true
+      ingressClass: nginx-private
+      publishService:
+        enabled: true
+      service:
+        annotations:
+          cloud.google.com/load-balancer-type: Internal
+      podAnnotations:
+        config.linkerd.io/proxy-cpu-limit: "1"
+        config.linkerd.io/proxy-cpu-request: "0.5"
+        config.linkerd.io/proxy-memory-limit: 1Gi
+        config.linkerd.io/proxy-memory-request: 256Mi
+        linkerd.io/inject: enabled
+      resources:
+        # limits:
+        #   cpu: "2"
+        #   memory: 1Gi
+        # requests:
+        #   cpu: "1"
+        #   memory: 512Mi
+      nodeSelector:
+        cloud.google.com/gke-nodepool: infra-components
+      tolerations:
+        - effect: NoSchedule
+          key: infra
+          operator: Equal
+          value: "true"
+    defaultBackend:
+      resources:
+        limits:
+          cpu: "1"
+          memory: 512Mi
+        requests:
+          cpu: 200m
+          memory: 128Mi
+      nodeSelector:
+        cloud.google.com/gke-nodepool: infra-components
+      tolerations:
+        - effect: NoSchedule
+          key: infra
+          operator: Equal
+          value: "true"
+
+nginx_ingress_public:
+  enabled: true
+  finalizer:
+    enabled: true
+  spec:
+    controller:
+      autoscaling:
+        enabled: true
+        minReplicas: 2
+        targetCPUUtilizationPercentage: 60
+        targetMemoryUtilizationPercentage: 60
+      extraArgs:
+        enable-ssl-passthrough: true
+      ingressClass: nginx-public
+      publishService:
+        enabled: true
+      service:
+        annotations:
+          cloud.google.com/load-balancer-type: Public
+      podAnnotations:
+        config.linkerd.io/proxy-cpu-limit: "1"
+        config.linkerd.io/proxy-cpu-request: "0.5"
+        config.linkerd.io/proxy-memory-limit: 1Gi
+        config.linkerd.io/proxy-memory-request: 256Mi
+        linkerd.io/inject: enabled
+      resources:
+        #limits:
+        #  cpu: "2"
+        #  memory: 1Gi
+        #requests:
+        #  cpu: "1"
+        #  memory: 512Mi
+      nodeSelector:
+        cloud.google.com/gke-nodepool: infra-components
+      tolerations:
+        - effect: NoSchedule
+          key: infra
+          operator: Equal
+          value: "true"
+    defaultBackend:
+      resources:
+        limits:
+          cpu: "1"
+          memory: 512Mi
+        requests:
+          cpu: 200m
+          memory: 128Mi
+      nodeSelector:
+        cloud.google.com/gke-nodepool: infra-components
+      tolerations:
+        - effect: NoSchedule
+          key: infra
+          operator: Equal
+          value: "true"
+
+vault:
+  enabled: true
+  namespace: vault
+  source:
+    path: .
+    repoURL: https://github.com/hashicorp/vault-helm
+    targetRevision: v0.4.0
+  finalizer:
+    enabled: true
+  spec:
+    consul:
+      image:
+        repository: gcr.io/sre-001/sre/consul
+        pullPolicy: IfNotPresent
+        tag: latest
+      replicaCount: 3
+    vault:
+      image:
+        repository: gcr.io/sre-001/sre/vault-server
+        pullPolicy: IfNotPresent
+        tag: latest
+      replicaCount: 3
+      unseal:
+        gcpProjectID: production
+    ingress:
+      enabled: true
+      annotations:
+        nginx.ingress.kubernetes.io/configuration-snippet: |
+          proxy_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+          grpc_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+        kubernetes.io/ingress.class: "nginx-private"
+        cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      hostname: vault-sre.some-domain.com
+    nameOverride: ""
+    fullnameOverride: ""
+    resources: {}
+    nodeSelector:
+      cloud.google.com/gke-nodepool: infra-components
+    tolerations:
+    - effect: NoSchedule
+      key: infra
+      operator: Equal
+      value: "true"
+
+velero:
+  enabled: true
+  namespace: velero
+  source:
+    path: charts/velero
+    repoURL: https://github.com/vmware-tanzu/helm-charts
+    targetRevision: velero-2.8.1
+  finalizer:
+    enabled: true
+  spec:
+    image:
+      repository: velero/velero
+      tag: v1.2.0
+      pullPolicy: IfNotPresent
+    resources: {}
+    initContainers:
+      - name: velero-plugin-for-gcp
+        image: velero/velero-plugin-for-gcp:v1.0.0
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - mountPath: /target
+            name: plugins
+    nodeSelector:
+      cloud.google.com/gke-nodepool: infra-components
+    tolerations:
+    - effect: NoSchedule
+      key: infra
+      operator: Equal
+      value: "true"
+    metrics:
+      enabled: true
+      scrapeInterval: 30s
+      # Pod annotations for Prometheus
+      podAnnotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8085"
+        prometheus.io/path: "/metrics"
+      serviceMonitor:
+        enabled: false
+        additionalLabels: {}
+    # Parameters for the `default` BackupStorageLocation and VolumeSnapshotLocation, and additional server settings.
+    configuration:
+      provider: gcp
+      # Parameters for the `default` BackupStorageLocation - https://velero.io/docs/v1.0.0/api-types/backupstoragelocation/
+      backupStorageLocation:
+        name: gcp
+        bucket: sre-001-velero
+        prefix: infra-apps-test
+        config: {}
+      # https://velero.io/docs/v1.0.0/api-types/volumesnapshotlocation/
+      volumeSnapshotLocation:
+        name: gcp
+        config: {}
+    rbac:
+      create: true
+      clusterAdministrator: true
+    serviceAccount:
+      server:
+        create: true
+        name:
+        annotations:
+    credentials:
+      useSecret: true
+      existingSecret: gcp-velero-sa-key
+    snapshotsEnabled: true

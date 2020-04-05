@@ -1,0 +1,26 @@
+{{- if .Values.velero.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Release.Name }}-velero
+  namespace: {{ .Values.general.namespace }}
+{{- if .Values.velero.finalizer.enabled }}
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+{{- end }}
+spec:
+  destination:
+    namespace: {{ .Values.velero.namespace }}
+    server: {{ .Values.general.destination.server }}
+  project: default
+  source:
+    path: {{ .Values.velero.source.path }}
+    repoURL: {{ .Values.velero.source.repoURL }}
+    targetRevision: {{ .Values.velero.source.targetRevision }}
+    helm:
+      values: |
+{{ toYaml .Values.velero.spec | indent 8 }}
+  syncPolicy:
+    automated:
+      prune: true
+{{- end }}

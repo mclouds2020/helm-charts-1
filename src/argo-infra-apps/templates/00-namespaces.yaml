@@ -1,0 +1,43 @@
+{{- if .Values.argo.enabled }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.argo.namespace }}
+{{- end }}
+---
+{{- if .Values.cert_manager.enabled }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.cert_manager.namespace }}
+  labels:
+    cert-manager.io/disable-validation: "true"
+{{- end }}
+---
+{{- if .Values.external_dns.enabled }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.external_dns.namespace }}
+{{- end }}
+---
+{{- if or .Values.nginx_ingress_private.enabled .Values.nginx_ingress_public.enabled }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.general.nginx.namespace }}
+{{- end }}
+---
+{{- if .Values.vault.enabled }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.vault.namespace }}
+{{- end }}
+---
+{{- if .Values.velero.enabled }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.velero.namespace }}
+{{- end }}

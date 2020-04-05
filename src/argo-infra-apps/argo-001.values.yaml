@@ -1,0 +1,434 @@
+nameOverride: argocd
+fullnameOverride: ""
+
+# Optional CRD installation for those without Helm hooks
+installCRDs: false
+
+global:
+  image:
+    repository: argoproj/argocd
+    tag: v1.4.1
+    imagePullPolicy: IfNotPresent
+  securityContext: {}
+  #  runAsUser: 999
+  #  runAsGroup: 999
+  #  fsGroup: 999
+
+# Controller
+controller:
+  name: application-controller
+  image:
+    repository: # argoproj/argocd
+    tag: # v1.4.1
+    imagePullPolicy: # IfNotPresent
+  args:
+    statusProcessors: "20"
+    operationProcessors: "10"
+  logLevel: info
+  extraArgs: {}
+  # Environment variables
+  env: []
+  podAnnotations: {}
+  podLabels: {}
+  containerSecurityContext: {}
+    # capabilities:
+    #   drop:
+    #     - all
+  containerPort: 8082
+  readinessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  livenessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  volumeMounts: []
+  volumes: []
+  nodeSelector:
+    cloud.google.com/gke-nodepool: infra-components
+  tolerations:
+    - effect: NoSchedule
+      key: infra
+      operator: Equal
+      value: "true"
+  affinity: {}
+  priorityClassName: ""
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 250m
+    #   memory: 256Mi
+  service:
+    annotations: {}
+    labels: {}
+    port: 8082
+  serviceAccount:
+    create: true
+    name: argocd-application-controller
+  clusterAdminAccess:
+    enabled: true
+
+# Dex
+dex:
+  enabled: true
+  name: dex-server
+  image:
+    repository: quay.io/dexidp/dex
+    tag: v2.14.0
+    imagePullPolicy: IfNotPresent
+  initImage:
+    repository:
+    tag:
+    imagePullPolicy:
+  # Environment variables
+  env: []
+  serviceAccount:
+    create: true
+    name: argocd-dex-server
+  volumeMounts:
+    - name: static-files
+      mountPath: /shared
+  volumes:
+    - name: static-files
+      emptyDir: {}
+  containerPortHttp: 5556
+  servicePortHttp: 5556
+  containerPortGrpc: 5557
+  servicePortGrpc: 5557
+  nodeSelector:
+    cloud.google.com/gke-nodepool: infra-components
+  tolerations:
+    - effect: NoSchedule
+      key: infra
+      operator: Equal
+      value: "true"
+  affinity: {}
+  containerSecurityContext: {}
+    # capabilities:
+    #   drop:
+    #     - all
+  resources: {}
+    # limits:
+    #   cpu: 50m
+    #   memory: 64Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 32Mi
+
+# Redis
+redis:
+  enabled: true
+  name: redis
+  image:
+    repository: redis
+    tag: 5.0.3
+    imagePullPolicy: IfNotPresent
+  containerPort: 6379
+  servicePort: 6379
+  env: []
+  nodeSelector:
+    cloud.google.com/gke-nodepool: infra-components
+  tolerations:
+    - effect: NoSchedule
+      key: infra
+      operator: Equal
+      value: "true"
+  affinity: {}
+  priorityClassName: ""
+  containerSecurityContext: {}
+    # capabilities:
+    #   drop:
+    #     - all
+  resources: {}
+    # limits:
+    #   cpu: 200m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 64Mi
+  volumeMounts: []
+  volumes: []
+
+# Server
+server:
+  name: server
+  image:
+    repository: # argoproj/argocd
+    tag: # v1.4.1
+    imagePullPolicy: # IfNotPresent
+  extraArgs: {}
+    # insecure: true
+  env: []
+  logLevel: info
+  podAnnotations: {}
+  podLabels: {}
+  containerPort: 8080
+  readinessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  livenessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  volumeMounts: []
+  volumes: []
+  nodeSelector:
+    cloud.google.com/gke-nodepool: infra-components
+  tolerations:
+    - effect: NoSchedule
+      key: infra
+      operator: Equal
+      value: "true"
+  affinity: {}
+  priorityClassName: ""
+  containerSecurityContext: {}
+    # capabilities:
+    #   drop:
+    #     - all
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 50m
+    #   memory: 64Mi
+  certificate:
+    enabled: false
+    domain: argocd.example.com
+    issuer: {}
+    additionalHosts: []
+  service:
+    annotations: {}
+    labels: {}
+    type: ClusterIP
+    servicePortHttp: 80
+    servicePortHttps: 443
+  metrics:
+    enabled: false
+    service:
+      annotations: {}
+      labels: {}
+      servicePort: 8083
+    serviceMonitor:
+      enabled: false
+      # selector:
+      #   prometheus: kube-prometheus
+      # namespace: monitoring
+      # additionalLabels: {}
+  serviceAccount:
+    create: true
+    name: argocd-server
+  ingress:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/configuration-snippet: |
+        proxy_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+        grpc_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+      kubernetes.io/ingress.class: "nginx-private"
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      # When encountering a redirect loop or 307s you need to force the nginx-ingress
+      # to connect to the backend using HTTPS.
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    labels: {}
+    hosts:
+    - argocd-001.gke.some-domain.com
+    paths:
+      - /
+    tls:
+      - secretName: argocd-tls
+        hosts:
+        - argocd-001.gke.some-domain.com
+
+  # Configuration - https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/argocd-cm.yaml
+  config:
+    url: https://argocd-001.gke.some-domain.com
+    application.instanceLabelKey: argocd.argoproj.io/instance
+    dex.config: |
+      connectors:
+      - config:
+          clientID: b347bae7db2975427978
+          clientSecret: $dex.github.clientSecret
+          orgs:
+          - name: some-org
+            teams:
+            - argo-admin
+            - Infrastructure Engineering
+            - Engineering and Data Science
+        id: github
+        name: GitHub
+        type: github
+    repositories: |
+      - sshPrivateKeySecret:
+          key: sshPrivateKey
+          name: github-ssh-key
+        url: git@github.com:some-org/helm_charts.git
+      - type: helm
+        url: https://kubernetes-charts.storage.googleapis.com/
+        name: stable
+      - type: helm
+        url: https://argoproj.github.io/argo-helm
+        name: argo
+      - type: helm
+        url: https://charts.jetstack.io
+        name: jetstack
+    resource.customizations: |
+      certmanager.k8s.io/Certificate:
+        health.lua: |
+          hs = {}
+          if obj.status ~= nil then
+            if obj.status.conditions ~= nil then
+              for i, condition in ipairs(obj.status.conditions) do
+                if condition.type == "Ready" and condition.status == "False" then
+                  hs.status = "Degraded"
+                  hs.message = condition.message
+                  return hs
+                end
+                if condition.type == "Ready" and condition.status == "True" then
+                  hs.status = "Healthy"
+                  hs.message = condition.message
+                  return hs
+                end
+              end
+            end
+          end
+
+          hs.status = "Progressing"
+          hs.message = "Waiting for certificate"
+          return hs
+
+  # RBAC - https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/rbac.md
+  rbacConfig:
+    policy.csv: |
+      p, role:engineer, applications, get, */*, allow
+      p, role:engineer, applications, sync, */*, allow
+      p, role:engineer, applications, *, deployment-demo/*, allow
+      p, role:engineer, applications, delete, */*, allow
+      p, role:engineer, applications, restart, */*, allow
+      p, role:engineer, projects, get, *, allow
+      p, role:engineer, clusters, get, *, allow
+      p, role:engineer, repositories, get, *, allow
+
+      g, some-org:argo-admin, role:admin
+      g, some-org:Infrastructure Engineering, role:engineer
+      g, some-org:Engineering and Data Science, role:engineer
+
+  # Applications - https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/
+  additionalApplications: []
+  # Projects - https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/
+  additionalProjects: []
+
+# Repo Server
+repoServer:
+  name: repo-server
+  image:
+    repository: # argoproj/argocd
+    tag: # v1.4.1
+    imagePullPolicy: # IfNotPresent
+  extraArgs: {}
+  env: []
+  logLevel: info
+  podAnnotations: {}
+  podLabels: {}
+  containerPort: 8081
+  readinessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  livenessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  volumeMounts: []
+  volumes: []
+  nodeSelector:
+    cloud.google.com/gke-nodepool: infra-components
+  tolerations:
+    - effect: NoSchedule
+      key: infra
+      operator: Equal
+      value: "true"
+  affinity: {}
+  priorityClassName: ""
+  containerSecurityContext: {}
+    # capabilities:
+    #   drop:
+    #     - all
+  resources: {}
+    # limits:
+    #   cpu: 50m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 64Mi
+  service:
+    annotations: {}
+    labels: {}
+    port: 8081
+  metrics:
+    enabled: false
+    service:
+      annotations: {}
+      labels: {}
+      servicePort: 8084
+    serviceMonitor:
+      enabled: false
+      # selector:
+      #   prometheus: kube-prometheus
+      # namespace: monitoring
+      # additionalLabels: {}
+
+# Argo Configs
+configs:
+  knownHosts:
+    data:
+      ssh_known_hosts: |
+        bitbucket.org ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAubiN81eDcafrgMeLzaFPsw2kNvEcqTKl/VqLat/MaB33pZy0y3rJZtnqwR2qOOvbwKZYKiEO1O6VqNEBxKvJJelCq0dTXWT5pbO2gDXC6h6QDXCaHo6pOHGPUy+YBaGQRGuSusMEASYiWunYN0vCAI8QaXnWMXNMdFP3jHAJH0eDsoiGnLPBlBp4TNm6rYI74nMzgz3B9IikW4WVK+dc8KZJZWYjAuORU3jc1c/NPskD2ASinf8v3xnfXeukU0sJ5N6m5E8VLjObPEO+mN2t/FZTMZLiFqPWc/ALSqnMnnhwrNi2rbfg/rd/IpL8Le3pSBne8+seeFVBoGqzHM9yXw==
+        github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
+        gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFSMqzJeV9rUzU4kWitGjeR4PWSa29SPqJ1fVkhtj3Hw9xjLVXVYrU9QlYWrOLXBpQ6KWjbjTDTdDkoohFzgbEY=
+        gitlab.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLp1Btn/nOeHHE5UOzRdf
+        gitlab.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsj2bNKTBSpIYDEGk9KxsGh3mySTRgMtXL583qmBpzeQ+jqCMRgBqB98u3z++J1sKlXHWfM9dyhSevkMwSbhoR8XIq/U0tCNyokEi/ueaBMCvbcTHhO7FcwzY92WK4Yt0aGROY5qX2UKSeOvuP4D6TPqKF1onrSzH9bx9XUf2lEdWT/ia1NEKjunUqu1xOB/StKDHMoX4/OKyIzuS0q/T1zOATthvasJFoPrAjkohTyaDUz2LN5JoH839hViyEG82yB+MjcFV5MU3N1l1QL3cVUCh93xSaua1N85qivl+siMkPGbO5xR/En4iEY6K2XPASUEMaieWVNTRCtJ4S8H+9
+        ssh.dev.azure.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Hr1oTWqNqOlzGJOfGJ4NakVyIzf1rXYd4d7wo6jBlkLvCA4odBlL0mDUyZ0/QUfTTqeu+tm22gOsv+VrVTMk6vwRU75gY/y9ut5Mb3bR5BV58dKXyq9A9UeB5Cakehn5Zgm6x1mKoVyf+FFn26iYqXJRgzIZZcZ5V6hrE0Qg39kZm4az48o0AUbf6Sp4SLdvnuMa2sVNwHBboS7EJkm57XQPVU3/QpyNLHbWDdzwtrlS+ez30S3AdYhLKEOxAG8weOnyrtLJAUen9mTkol8oII1edf7mWWbWVf0nBmly21+nZcmCTISQBtdcyPaEno7fFQMDD26/s0lfKob4Kw8H
+        vs-ssh.visualstudio.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Hr1oTWqNqOlzGJOfGJ4NakVyIzf1rXYd4d7wo6jBlkLvCA4odBlL0mDUyZ0/QUfTTqeu+tm22gOsv+VrVTMk6vwRU75gY/y9ut5Mb3bR5BV58dKXyq9A9UeB5Cakehn5Zgm6x1mKoVyf+FFn26iYqXJRgzIZZcZ5V6hrE0Qg39kZm4az48o0AUbf6Sp4SLdvnuMa2sVNwHBboS7EJkm57XQPVU3/QpyNLHbWDdzwtrlS+ez30S3AdYhLKEOxAG8weOnyrtLJAUen9mTkol8oII1edf7mWWbWVf0nBmly21+nZcmCTISQBtdcyPaEno7fFQMDD26/s0lfKob4Kw8H
+  tlsCerts:
+    {}
+    # data:
+    #   argocd.example.com: |
+    #     -----BEGIN CERTIFICATE-----
+    #     ...
+    #     -----END CERTIFICATE-----
+  # Creates a secret with optional repository credentials
+  repositoryCredentials:
+    {}
+    # sample-ssh-key: |
+    # -----BEGIN RSA PRIVATE KEY-----
+    # ...
+    # -----END RSA PRIVATE KEY-----
+  secret:
+    createSecret: true
+    # Webhook Secrets
+    githubSecret: ""
+    gitlabSecret: ""
+    bitbucketServerSecret: ""
+    bitbucketUUÌD: ""
+    gogsSecret: ""
+    # Custom secrets. Useful for injecting SSO secrets into environment variables. Note that all values must be non-empty.
+    # https://argoproj.github.io/argo-cd/operator-manual/sso/
+    extra: {}
+      # LDAP_PASSWORD: "mypassword"
