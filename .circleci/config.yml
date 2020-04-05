@@ -8,45 +8,42 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Create a directory for the package
-          command: mkdir /tmp/chart_dir
+          command: mkdir /tmp/packaged_charts
       - run:
-          name: Package the chart
-          command: helm package ~/project
-          working_directory: /tmp/chart_dir
-      - run:
-          name: Name?
+          name: Package all the charts
           command: |
-            echo $(ls chart_dir | cut -d . -f1-3 )
-          working_directory: /tmp
+            for chart in $(find ~/project/src -d -mindepth 1 -maxdepth 1)
+              do helm package $chart -d /tmp/packaged_charts
+            done
       - save_cache:
           paths:
-            - /tmp/chart_dir
-          key: chart_dir
+            - /tmp/packaged_charts
+          key: packaged_charts
 
   upload:
     docker:
       - image: circleci/golang:1.14.1
     steps:
+      - checkout
       - restore_cache:
-          key: chart_dir
+          key: packaged_charts
       - run:
-          name: Clone the Helm charts repository :-/
-          command: |
-            mkdir ~/.ssh
-            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-            git clone git@github.com:mkorejo/charts_repo.git /tmp/charts_repo
-      - run:
-          command: mv /tmp/chart_dir/*.tgz /tmp/charts_repo
+          command: cp /tmp/packaged_charts ~/project/releases
       - run:
           name: Commit and push
           command: |
             git config --global user.email "infra-apps-uploader@blackhole.net"
             git config --global user.name "infra-apps Uploader"
-            git add *.tgz
+            git add **/*.tgz
             git commit -m "CircleCI Helm chart upload"
-            git push
+            git status
           working_directory: /tmp/charts_repo
+    # - run:
+    #     name: Clone the Helm charts repository :-/
+    #     command: |
+    #       mkdir ~/.ssh
+    #       echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+    #       git clone git@github.com:mkorejo/charts_repo.git /tmp/charts_repo
 
 workflows:
   version: 2
