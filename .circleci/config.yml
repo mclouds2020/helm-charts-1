@@ -22,15 +22,22 @@ jobs:
           command: helm repo index .
       - save_cache:
           paths:
-            - .
-          key: helm_charts-{{ .Revision }}
+            - ~/project/index.yaml
+          key: index-{{ .Revision }}
+      - save_cache:
+          paths:
+            - ~/project/releases
+          key: releases-{{ .Revision }}
 
   upload:
     docker:
       - image: circleci/golang:1.14.1
     steps:
+      - checkout
       - restore_cache:
-          key: helm_charts-{{ .Revision }}
+          key: index-{{ .Revision }}
+      - restore_cache:
+          key: releases-{{ .Revision }}
       - run:
           name: Commit and push
           command: |
@@ -39,7 +46,7 @@ jobs:
             git add index.yaml
             git add releases/*.tgz
             git commit -m "CircleCI Helm chart upload"
-            git push
+            git diff
     # - run:
     #     name: Clone the Helm charts repository :-/
     #     command: |
