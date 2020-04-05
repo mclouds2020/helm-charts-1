@@ -31,13 +31,17 @@ jobs:
       - run:
           command: cp /tmp/packaged_charts/*.tgz ~/project/releases
       - run:
+          name: Re-index the repository
+          command: helm repo index .
+      - run:
           name: Commit and push
           command: |
             git config --global user.email "infra-apps-uploader@blackhole.net"
             git config --global user.name "infra-apps Uploader"
-            git add **/*.tgz
+            git add index.yaml
+            git add releases/*.tgz
             git commit -m "CircleCI Helm chart upload"
-            git status
+            git push
     # - run:
     #     name: Clone the Helm charts repository :-/
     #     command: |
