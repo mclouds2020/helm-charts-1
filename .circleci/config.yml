@@ -42,6 +42,7 @@ jobs:
       - run:
           name: Stage new artifacts
           command: |
+            ls -al /tmp
             cp /tmp/index.yaml .
             cp /tmp/releases/*.tgz releases
       - run:
