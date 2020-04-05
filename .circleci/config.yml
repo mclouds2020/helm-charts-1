@@ -19,6 +19,7 @@ jobs:
           paths:
             - /tmp/packaged_charts
           key: packaged_charts
+          when: always
 
   upload:
     docker:
