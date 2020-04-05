@@ -28,7 +28,7 @@ jobs:
       - restore_cache:
           key: packaged_charts
       - run:
-          command: cp /tmp/packaged_charts ~/project/releases
+          command: cp /tmp/packaged_charts/*.tgz ~/project/releases
       - run:
           name: Commit and push
           command: |
