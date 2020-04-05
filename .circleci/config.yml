@@ -8,27 +8,23 @@ jobs:
     steps:
       - checkout
       - run:
-          command: mkdir /tmp/releases
+          command: mkdir /tmp/cache
       - run:
           name: Package all the charts
           command: |
             for chart in $(find ~/project/src -type d -mindepth 1 -maxdepth 1)
-              do helm package $chart -d /tmp/releases
+              do helm package $chart -d /tmp/cache
             done
       - run:
-          command: cp /tmp/releases/*.tgz releases
+          command: cp /tmp/cache/*.tgz releases
       - run:
           name: Re-index the repository
-          command: helm repo index ~/project --url https://mkorejo.github.io/helm_charts
-          working_directory: /tmp
+          command: helm repo index . --url https://mkorejo.github.io/helm_charts
+          working_directory: /tmp/cache
       - save_cache:
           paths:
-            - /tmp/index.yaml
-          key: index-{{ .Revision }}
-      - save_cache:
-          paths:
-            - /tmp/releases
-          key: releases-{{ .Revision }}
+            - /tmp/cache
+          key: cache-{{ .Revision }}
 
   upload:
     docker:
@@ -36,15 +32,13 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: index-{{ .Revision }}
-      - restore_cache:
-          key: releases-{{ .Revision }}
+          key: cache-{{ .Revision }}
       - run:
           name: Stage new artifacts
           command: |
-            ls -al /tmp
-            cp /tmp/index.yaml .
-            cp /tmp/releases/*.tgz releases
+            ls -al /tmp/cache
+            cp /tmp/cache/index.yaml .
+            cp /tmp/cache/*.tgz releases
       - run:
           name: Commit and push
           command: |
