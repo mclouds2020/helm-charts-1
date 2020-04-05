@@ -3,12 +3,12 @@ entries:
   crds:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-04-04T20:17:33.735735-05:00"
+    created: "2020-04-04T20:57:50.969965-05:00"
     description: A Helm chart for Kubernetes
     digest: 85f06a5e85f11426b5879454330fe60402531bc6f06048c9dcb5aeafa74a33ec
     name: crds
     type: application
     urls:
-    - https://mkorejo.github.io/helm_repo/crds-0.1.0.tgz
+    - https://mkorejo.github.io/charts_repo/crds-0.1.0.tgz
     version: 0.1.0
-generated: "2020-04-04T20:17:33.731394-05:00"
+generated: "2020-04-04T20:57:50.966405-05:00"
