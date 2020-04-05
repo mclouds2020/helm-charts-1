@@ -19,9 +19,8 @@ jobs:
           command: cp /tmp/releases/*.tgz releases
       - run:
           name: Re-index the repository
-          command: helm repo index . --url https://mkorejo.github.io/helm_charts
-      - run:
-          command: cp ~/project/index.yaml /tmp/index.yaml
+          command: helm repo index ~/project --url https://mkorejo.github.io/helm_charts
+          working_directory: /tmp
       - save_cache:
           paths:
             - /tmp/index.yaml
@@ -53,7 +52,7 @@ jobs:
             git add index.yaml
             git add releases/*.tgz
             git commit -m "CircleCI Helm chart upload"
-            git diff
+            git push
     # - run:
     #     name: Clone the Helm charts repository :-/
     #     command: |
