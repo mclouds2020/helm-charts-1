@@ -23,14 +23,14 @@ jobs:
       - save_cache:
           paths:
             - .
-          key: helm_charts-{{ checksum "index.yaml" }}
+          key: helm_charts-{{ .Revision }}
 
   upload:
     docker:
       - image: circleci/golang:1.14.1
     steps:
       - restore_cache:
-          key: helm_charts-{{ checksum "index.yaml" }}
+          key: helm_charts-{{ .Revision }}
       - run:
           name: Commit and push
           command: |
