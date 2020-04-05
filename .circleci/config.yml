@@ -12,7 +12,7 @@ jobs:
       - run:
           name: Package all the charts
           command: |
-            for chart in $(find ~/project/src -d -mindepth 1 -maxdepth 1)
+            for chart in $(find ~/project/src -type d -mindepth 1 -maxdepth 1)
               do helm package $chart -d /tmp/packaged_charts
             done
       - save_cache:
