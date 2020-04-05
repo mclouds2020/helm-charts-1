@@ -36,9 +36,9 @@ jobs:
       - run:
           name: Stage new artifacts
           command: |
-            ls -al /tmp/cache
             cp /tmp/cache/index.yaml .
             cp /tmp/cache/*.tgz releases
+      - add_ssh_keys
       - run:
           name: Commit and push
           command: |
