@@ -3,9 +3,9 @@ entries:
   crds:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-04-05T20:51:42.262768144Z"
+    created: "2020-04-05T20:52:00.35835914Z"
     description: A Helm chart for Kubernetes
-    digest: ae9b7ada904801f04578a16cdb8c6e1be94e62c46ca0a7170992d71d124951d4
+    digest: 59a1be48ee3a7ec6190ca4a0ebe7fd419df10283e4ea1ae1264dbd4d6f1d4e9e
     name: crds
     type: application
     urls:
@@ -14,12 +14,12 @@ entries:
   infra-apps:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-04-05T20:51:42.264281296Z"
+    created: "2020-04-05T20:52:00.359875674Z"
     description: A Helm chart for Kubernetes
-    digest: 7e43630dcab4a747eb39db0113fb3684018022e55c0da34c416d1f482881b97b
+    digest: a28c8eb940560e881ec67d0dd476ee2534250ec5dd45e3032f7d3c61437f6660
     name: infra-apps
     type: application
     urls:
     - https://mkorejo.github.io/helm_charts/infra-apps-0.1.0.tgz
     version: 0.1.0
-generated: "2020-04-05T20:51:42.260349415Z"
+generated: "2020-04-05T20:52:00.355912156Z"
