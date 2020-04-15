@@ -51,11 +51,11 @@ cert_manager:
     email: murad.korejo@coda.global
     server: https://acme-v02.api.letsencrypt.org/directory
     aws:
-      accessKeyID:
-      hostedZoneID:
+      accessKeyID: ""
+      hostedZoneID: ""
       iam_sa:
-        enabled: false
-        role:
+        enabled: true
+        role: ""
       region: us-east-1
       secretAccessKeySecretRef:
         name: route53-credentials
