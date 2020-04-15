@@ -14,7 +14,7 @@ spec:
     server: {{ .Values.general.destination.server }}
   project: default
   source:
-    path: {{ .Values.vault.source.path }}
+    chart: {{ .Values.vault.source.chart }}
     repoURL: {{ .Values.vault.source.repoURL }}
     targetRevision: {{ .Values.vault.source.targetRevision }}
     helm:
