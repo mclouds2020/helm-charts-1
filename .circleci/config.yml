@@ -7,6 +7,8 @@ jobs:
       - image: quay.io/mkorejo/git_helm
     steps:
       - checkout
+      - run: git submodule sync
+      - run: git submodule update --init
       - run:
           name: Package all the charts
           command: |
