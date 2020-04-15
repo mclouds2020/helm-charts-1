@@ -3,9 +3,9 @@ entries:
   crds:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-04-15T18:09:31.82037184Z"
+    created: "2020-04-15T22:29:27.002805406Z"
     description: A Helm chart for Kubernetes
-    digest: fbb382db75ed3ab21ae1376e81c6142cb8ffbf498c6ac7104979bc1b7de4a224
+    digest: f7a687a7d5e72f1e0239bc31a894d0476af6f7f711fc8da0d4ef3e180d6f70c3
     name: crds
     type: application
     urls:
@@ -14,9 +14,9 @@ entries:
   infra-apps:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-04-15T18:09:31.823099105Z"
+    created: "2020-04-15T22:29:27.004259845Z"
     description: A Helm chart for Kubernetes
-    digest: 910c49df27f3d37aa82d73f0e807f59b882ff008cfb300523473ee7a23211b00
+    digest: 55771e7f0e25eb751582fed5393151f83f47e7c9ba95f2b22780b0a4914d458d
     name: infra-apps
     type: application
     urls:
@@ -24,9 +24,9 @@ entries:
     version: 0.1.0
   vault:
   - apiVersion: v2
-    created: "2020-04-15T18:09:31.82597322Z"
+    created: "2020-04-15T22:29:27.005898091Z"
     description: Install and configure Vault on Kubernetes.
-    digest: 0f97d3a1f1d9796486f6de2e5a149e66cd30c237112f187a6acbafed099cf7ab
+    digest: a34aab327b3ff12565d5cb22685f6daac75cb3130172c6ab8d6c4b882799eae3
     home: https://www.vaultproject.io
     icon: https://github.com/hashicorp/vault/raw/f22d202cde2018f9455dec755118a9b84586e082/Vault_PrimaryLogo_Black.png
     name: vault
@@ -37,4 +37,4 @@ entries:
     urls:
     - https://mkorejo.github.io/helm_charts/releases/vault-0.5.0.tgz
     version: 0.5.0
-generated: "2020-04-15T18:09:31.817049415Z"
+generated: "2020-04-15T22:29:27.000049953Z"
