@@ -1,49 +1,21 @@
 # https://circleci.com/docs/2.0/configuration-reference/
 version: 2
 jobs:
-  build:
+  main:
     working_directory: ~/project
     docker:
-      - image: alpine/helm:3.1.2
+      - image: quay.io/mkorejo/git_helm
     steps:
       - checkout
-      - run:
-          command: mkdir /tmp/cache
       - run:
           name: Package all the charts
           command: |
             for chart in $(find ~/project/src -type d -mindepth 1 -maxdepth 1)
-              do helm package $chart -d /tmp/cache
+              do helm package $chart -d releases/
             done
-      - run:
-          command: cp /tmp/cache/*.tgz releases
       - run:
           name: Re-index the repository
           command: helm repo index . --url https://mkorejo.github.io/helm_charts
-          working_directory: /tmp/cache
-      - save_cache:
-          paths:
-            - /tmp/cache
-          key: cache-{{ .Revision }}
-
-  upload:
-    docker:
-      - image: circleci/golang:1.14.1
-    steps:
-      - checkout
-    # - run:
-    #     name: Clone the Helm charts repository :-/
-    #     command: |
-    #       mkdir ~/.ssh
-    #       echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-    #       git clone git@github.com:mkorejo/charts_repo.git /tmp/charts_repo
-      - restore_cache:
-          key: cache-{{ .Revision }}
-      - run:
-          name: Stage new artifacts
-          command: |
-            cp /tmp/cache/index.yaml .
-            cp /tmp/cache/*.tgz releases
       - add_ssh_keys
       - run:
           name: Commit and push
@@ -59,10 +31,7 @@ workflows:
   version: 2
   build_and_upload:
     jobs:
-      - build:
+      - main:
           filters:
             branches:
               only: master
-      - upload:
-          requires:
-            - build
