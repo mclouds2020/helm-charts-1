@@ -40,6 +40,16 @@ spec:
     privateKeySecretRef:
       name: {{ .Values.cert_manager.issuer.name }}-acme-issuer-account-key
     solvers:
+  {{- if .Values.cert_manager.issuer.aws.iam_sa.enabled }}
+    - selector:
+        dnsZones:
+          - "example.com"
+      dns01:
+        route53:
+          region: {{ .Values.cert_manager.issuer.aws.region }}
+          hostedZoneID: {{ .Values.cert_manager.issuer.aws.hostedZoneID }}
+          role: {{ .Values.cert_manager.issuer.aws.iam_sa.role }}
+  {{- else }}
     - dns01:
         route53:
           accessKeyID: {{ .Values.cert_manager.issuer.aws.accessKeyID }}
@@ -48,4 +58,5 @@ spec:
           secretAccessKeySecretRef:
             name: {{ .Values.cert_manager.issuer.aws.secretAccessKeySecretRef.name }}
             key: {{ .Values.cert_manager.issuer.aws.secretAccessKeySecretRef.key }}
+  {{- end }}
 {{- end }}
