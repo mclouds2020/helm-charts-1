@@ -168,8 +168,9 @@ nginx_ingress_public:
       ingressClass: nginx-public
       metrics:
         enabled: true
-        serviceMonitor:
-          enabled: true
+      # serviceMonitor is for use with Prometheus Operator (requires additional CRD)
+      # serviceMonitor:
+      #   enabled: true
       publishService:
         enabled: true
       service:
