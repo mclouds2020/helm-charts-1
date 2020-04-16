@@ -205,7 +205,7 @@ vault:
   namespace: vault
   source:
     chart: vault
-    repoURL: https://mkorejo.github.io/charts_repo
+    repoURL: https://mkorejo.github.io/helm_charts
     targetRevision: 0.5.0
   finalizer:
     enabled: true
