@@ -45,7 +45,7 @@ cert_manager:
     repoURL: https://charts.jetstack.io
     targetRevision: v0.14.2
   finalizer:
-    enabled: true
+    enabled: false
   issuer:
     name: letsencrypt-prod
     email: murad.korejo@coda.global
@@ -86,7 +86,7 @@ external_dns:
     repoURL: https://charts.bitnami.com/bitnami
     targetRevision: 2.20.13
   finalizer:
-    enabled: true
+    enabled: false
   spec:
     domainFilters:
     - coda.run
@@ -278,13 +278,8 @@ velero:
         volumeMounts:
           - mountPath: /target
             name: plugins
-    nodeSelector:
-      cloud.google.com/gke-nodepool: infra-components
-    tolerations:
-    - effect: NoSchedule
-      key: infra
-      operator: Equal
-      value: "true"
+    nodeSelector: {}
+    tolerations: []
     metrics:
       enabled: true
       scrapeInterval: 30s
