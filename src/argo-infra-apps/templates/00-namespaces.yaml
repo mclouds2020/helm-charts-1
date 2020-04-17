@@ -5,7 +5,7 @@ metadata:
   name: {{ .Values.argo.namespace }}
 {{- end }}
 ---
-{{- if and .Values.cert_manager.enabled .Values.cert_manager.create_namespace }}
+{{- if .Values.cert_manager.enabled }}
 apiVersion: v1
 kind: Namespace
 metadata:

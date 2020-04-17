@@ -39,9 +39,7 @@ argo:
 
 cert_manager:
   enabled: true
-  # The CRD YAML for cert-manager now includes the namespace. Do not install cert-manager in a namespace that's not called "cert-manager"
-  # without first adjusting the CRD YAML.
-  create_namespace: false
+  # Do not install cert-manager in a namespace that's not called "cert-manager" without first adjusting the CRD YAML.
   namespace: cert-manager
   source:
     chart: cert-manager
