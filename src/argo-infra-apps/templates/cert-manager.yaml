@@ -41,10 +41,7 @@ spec:
       name: {{ .Values.cert_manager.issuer.name }}-acme-issuer-account-key
     solvers:
   {{- if .Values.cert_manager.issuer.aws.iam_sa.enabled }}
-    - selector:
-        dnsZones:
-          - "example.com"
-      dns01:
+    - dns01:
         route53:
           region: {{ .Values.cert_manager.issuer.aws.region }}
           hostedZoneID: {{ .Values.cert_manager.issuer.aws.hostedZoneID }}
