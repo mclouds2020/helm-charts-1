@@ -39,6 +39,7 @@ argo:
 
 cert_manager:
   enabled: true
+  create_namespace: false
   namespace: cert-manager
   source:
     chart: cert-manager
