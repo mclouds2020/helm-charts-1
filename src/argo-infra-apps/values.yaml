@@ -19,7 +19,7 @@ argo:
     repoURL: https://argoproj.github.io/argo-helm
     targetRevision: 2.2.2
   finalizer:
-    enabled: true
+    enabled: false
   spec:
     ingress:
       enabled: true
@@ -100,7 +100,7 @@ external_dns:
 nginx_ingress_private:
   enabled: false
   finalizer:
-    enabled: true
+    enabled: false
   spec:
     controller:
       autoscaling:
@@ -155,7 +155,7 @@ nginx_ingress_private:
 nginx_ingress_public:
   enabled: true
   finalizer:
-    enabled: true
+    enabled: false
   spec:
     controller:
       autoscaling:
@@ -209,7 +209,7 @@ vault:
     repoURL: https://mkorejo.github.io/helm_charts
     targetRevision: 0.5.0
   finalizer:
-    enabled: true
+    enabled: false
   spec:
     injector:
       enabled: false
@@ -265,7 +265,7 @@ velero:
     repoURL: https://github.com/vmware-tanzu/helm-charts
     targetRevision: velero-2.8.1
   finalizer:
-    enabled: true
+    enabled: false
   spec:
     image:
       repository: velero/velero
