@@ -48,7 +48,7 @@ cert_manager:
     enabled: false
   issuer:
     name: letsencrypt-prod
-    email: murad.korejo@coda.global
+    email: ""
     server: https://acme-v02.api.letsencrypt.org/directory
     aws:
       accessKeyID: ""
@@ -56,7 +56,7 @@ cert_manager:
       iam_sa:
         enabled: true
         role: ""
-      region: us-east-1
+      region: ""
       secretAccessKeySecretRef:
         name: route53-credentials
         key: route53-credentials
@@ -69,12 +69,9 @@ cert_manager:
     nodeSelector: {}
     tolerations: []
     webhook:
-      enabled: false
       nodeSelector: {}
       tolerations: []
     cainjector:
-      image:
-        tag: v0.12.0
       nodeSelector: {}
       tolerations: []
 
@@ -176,7 +173,6 @@ nginx_ingress_public:
       service:
         annotations:
           # cloud.google.com/load-balancer-type: Public
-          service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:458527324684:certificate/f325bb78-95eb-4ccc-84b3-0b4a6ace7ec0
           service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
           service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https"
           service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '3600'
@@ -213,31 +209,38 @@ vault:
   spec:
     injector:
       enabled: false
-    ha:
-      enabled: true
-      config: |
-        ui = true
-
-        listener "tcp" {
-          tls_disable = 1
-          address = "[::]:8200"
-          cluster_address = "[::]:8201"
-        }
-
-        storage "consul" {
-          path = "vault"
-          address = "HOST_IP:8500"
-        }
-
-        service_registration "kubernetes" {}
-
-        # seal "gcpckms" {
-        #    project     = "vault-helm-dev-246514"
-        #    region      = "global"
-        #    key_ring    = "vault-helm-unseal-kr"
-        #    crypto_key  = "vault-helm-unseal-key"
-        # }
     server:
+      standalone:
+        enabled: false
+      ha:
+        enabled: true
+        config: |
+          ui = true
+
+          listener "tcp" {
+            tls_disable = 1
+            address = "[::]:8200"
+            cluster_address = "[::]:8201"
+          }
+
+          storage "consul" {
+            path = "vault"
+            address = "HOST_IP:8500"
+          }
+
+          service_registration "kubernetes" {}
+
+          # seal "awskms" {
+          #   region     = "us-east-1"
+          #   kms_key_id = "d7c1ffd9-8cce-45e7-be4a-bb38dd205966"
+          # }
+
+          # seal "gcpckms" {
+          #    project     = "vault-helm-dev-246514"
+          #    region      = "global"
+          #    key_ring    = "vault-helm-unseal-kr"
+          #    crypto_key  = "vault-helm-unseal-key"
+          # }
       ingress:
         enabled: true
         annotations: |
