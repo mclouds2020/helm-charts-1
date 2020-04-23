@@ -1,25 +1,25 @@
-{{- if .Values.external_dns.enabled }}
+{{- if .Values.externalDNS.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: {{ .Release.Name }}-external-dns
   namespace: {{ .Values.general.namespace }}
-{{- if .Values.external_dns.finalizer.enabled }}
+{{- if .Values.externalDNS.finalizer.enabled }}
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 {{- end }}
 spec:
   destination:
-    namespace: {{ .Values.external_dns.namespace }}
+    namespace: {{ .Values.externalDNS.namespace }}
     server: {{ .Values.general.destination.server }}
   project: default
   source:
-    chart: {{ .Values.external_dns.source.chart }}
-    repoURL: {{ .Values.external_dns.source.repoURL }}
-    targetRevision: {{ .Values.external_dns.source.targetRevision }}
+    chart: {{ .Values.externalDNS.source.chart }}
+    repoURL: {{ .Values.externalDNS.source.repoURL }}
+    targetRevision: {{ .Values.externalDNS.source.targetRevision }}
     helm:
       values: |
-{{ toYaml .Values.external_dns.spec | indent 8 }}
+{{ toYaml .Values.externalDNS.spec | indent 8 }}
   syncPolicy:
     automated:
       prune: true

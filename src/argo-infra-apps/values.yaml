@@ -77,7 +77,7 @@ certManager:
       nodeSelector: {}
       tolerations: []
 
-external_dns:
+externalDNS:
   enabled: true
   namespace: external-dns
   source:

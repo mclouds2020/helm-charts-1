@@ -14,7 +14,7 @@ Note that GitHub SSO won't work until Argo CD ingress is functional.
 ```
 export AWS_SECRET_ACCESS_KEY=<aws-secret-access-key>
 helm install infra-apps-test . -n argocd \
-  --set external_dns.spec.aws.credentials.secretKey=$AWS_SECRET_ACCESS_KEY
+  --set externalDNS.spec.aws.credentials.secretKey=$AWS_SECRET_ACCESS_KEY
 ```
 
 ## Apply Additional CRDs

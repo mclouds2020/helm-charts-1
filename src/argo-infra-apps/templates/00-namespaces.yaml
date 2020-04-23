@@ -14,11 +14,11 @@ metadata:
     cert-manager.io/disable-validation: "true"
 {{- end }}
 ---
-{{- if .Values.external_dns.enabled }}
+{{- if .Values.externalDNS.enabled }}
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ .Values.external_dns.namespace }}
+  name: {{ .Values.externalDNS.namespace }}
 {{- end }}
 ---
 {{- if or .Values.nginx_ingress_private.enabled .Values.nginx_ingress_public.enabled }}
