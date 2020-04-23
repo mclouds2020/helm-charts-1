@@ -2,8 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  # If you prepend "{{ .Release.Name }}-" to the name here as we have done for the other Application resources, the cert-manager webhook service cannot be found.
-  # failed calling webhook "webhook.cert-manager.io": Post https://cert-manager-webhook.cert-manager.svc:443/mutate?timeout=30s: service "cert-manager-webhook" not found
+  # Keep this name static so that the webhook will work (Post https://cert-manager-webhook.cert-manager.svc:443/mutate?timeout=30s: service "cert-manager-webhook" not found)
   name: cert-manager
   namespace: {{ .Values.general.namespace }}
 {{- if .Values.certManager.finalizer.enabled }}
