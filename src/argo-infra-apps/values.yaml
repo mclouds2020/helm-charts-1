@@ -47,21 +47,6 @@ certManager:
     targetRevision: v0.15.0-alpha.1
   finalizer:
     enabled: false
-  issuer:
-    enabled: false
-    name: letsencrypt-prod
-    email: ""
-    server: https://acme-v02.api.letsencrypt.org/directory
-    aws:
-      accessKeyID: ""
-      hostedZoneID: ""
-      iam_sa:
-        enabled: true
-        role: ""
-      region: ""
-      secretAccessKeySecretRef:
-        name: route53-credentials
-        key: route53-credentials
   spec:
     global:
       leaderElection:
