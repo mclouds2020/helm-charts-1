@@ -1,0 +1,32 @@
+{{- if and .Values.route53.enabled }}
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: {{ .Values.route53.name }}
+spec:
+  acme:
+    # Email address used for ACME registration and communication about issues/certificate expiration
+    email: {{ .Values.route53.email }}
+    # The ACME server URL
+    server: {{ .Values.route53.server }}
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: {{ .Values.route53.name }}-acme-issuer-account-key
+    solvers:
+  {{- if .Values.route53.iam_sa.enabled }}
+    - dns01:
+        route53:
+          region: {{ .Values.route53.region }}
+          hostedZoneID: {{ .Values.route53.hostedZoneID }}
+          role: {{ .Values.route53.iam_sa.role }}
+  {{- else }}
+    - dns01:
+        route53:
+          accessKeyID: {{ .Values.route53.accessKeyID }}
+          hostedZoneID: {{ .Values.route53.hostedZoneID }}
+          region: {{ .Values.route53.region }}
+          secretAccessKeySecretRef:
+            name: {{ .Values.route53.secretAccessKeySecretRef.name }}
+            key: {{ .Values.route53.secretAccessKeySecretRef.key }}
+  {{- end }}
+{{- end }}

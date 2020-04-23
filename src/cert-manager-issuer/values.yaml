@@ -1,0 +1,15 @@
+route53:
+  enabled: true
+  name: letsencrypt-prod-route53
+  email: ""
+  server: https://acme-v02.api.letsencrypt.org/directory
+
+  accessKeyID: ""
+  hostedZoneID: ""
+  iam_sa:
+    enabled: true
+    role: ""
+  region: ""
+  secretAccessKeySecretRef:
+    name: route53-credentials
+    key: route53-credentials
