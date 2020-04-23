@@ -2,7 +2,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ .Release.Name }}-cert-manager
+  # Keep this static so the webhook endpoint will work
+  name: cert-manager
   namespace: {{ .Values.general.namespace }}
 {{- if .Values.certManager.finalizer.enabled }}
   finalizers:
