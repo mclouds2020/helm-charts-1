@@ -27,7 +27,7 @@ spec:
 ---
 {{- if .Values.certManager.enabled }}
 {{- if .Values.certManager.clusterIssuer.enabled }}
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1alpha3
 kind: ClusterIssuer
 metadata:
   name: {{ .Values.certManager.issuer.name }}
