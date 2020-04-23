@@ -62,6 +62,7 @@ cert_manager:
         name: route53-credentials
         key: route53-credentials
   spec:
+    installCRDs: true
     global:
       leaderElection:
         namespace: cert-manager
