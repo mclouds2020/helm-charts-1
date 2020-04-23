@@ -48,6 +48,7 @@ certManager:
   finalizer:
     enabled: false
   issuer:
+    enabled: false
     name: letsencrypt-prod
     email: ""
     server: https://acme-v02.api.letsencrypt.org/directory
