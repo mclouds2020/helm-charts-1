@@ -37,14 +37,14 @@ argo:
         - argocd-sre.gke.some-domain.com
     installCRDs: false
 
-cert_manager:
+certManager:
   enabled: true
   # Do not install cert-manager in a namespace that's not called "cert-manager" without first adjusting the CRD YAML.
   namespace: cert-manager
   source:
     chart: cert-manager
     repoURL: https://charts.jetstack.io
-    targetRevision: v0.14.1
+    targetRevision: v0.15.0-alpha.1
   finalizer:
     enabled: false
   issuer:
@@ -62,7 +62,6 @@ cert_manager:
         name: route53-credentials
         key: route53-credentials
   spec:
-    installCRDs: true
     global:
       leaderElection:
         namespace: cert-manager

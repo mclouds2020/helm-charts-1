@@ -5,11 +5,11 @@ metadata:
   name: {{ .Values.argo.namespace }}
 {{- end }}
 ---
-{{- if .Values.cert_manager.enabled }}
+{{- if .Values.certManager.enabled }}
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ .Values.cert_manager.namespace }}
+  name: {{ .Values.certManager.namespace }}
   labels:
     cert-manager.io/disable-validation: "true"
 {{- end }}
