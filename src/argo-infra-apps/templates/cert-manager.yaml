@@ -2,8 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  # Keep this name static so that the webhook will work (Post https://cert-manager-webhook.cert-manager.svc:443/mutate?timeout=30s: service "cert-manager-webhook" not found)
-  name: cert-manager
+  name: {{ .Release.Name }}-cert-manager
   namespace: {{ .Values.general.namespace }}
 {{- if .Values.certManager.finalizer.enabled }}
   finalizers:
