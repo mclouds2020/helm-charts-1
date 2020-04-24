@@ -232,7 +232,7 @@ vault:
         enabled: true
         annotations: |
           kubernetes.io/ingress.class: "nginx-public"
-          cert-manager.io/cluster-issuer: "letsencrypt-prod"
+          cert-manager.io/cluster-issuer: "letsencrypt-prod-route53"
         hosts:
           - host: vault-sandbox.coda.run
         tls:
