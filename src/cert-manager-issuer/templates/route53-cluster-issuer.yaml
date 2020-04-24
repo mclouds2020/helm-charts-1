@@ -1,5 +1,5 @@
 {{- if and .Values.route53.enabled }}
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1alpha3
 kind: ClusterIssuer
 metadata:
   name: {{ .Values.route53.name }}

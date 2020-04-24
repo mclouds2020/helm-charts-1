@@ -9,7 +9,7 @@ route53:
   iam_sa:
     enabled: true
     role: ""
-  region: ""
+  region: us-east-1
   secretAccessKeySecretRef:
     name: route53-credentials
     key: route53-credentials

@@ -44,7 +44,7 @@ certManager:
   source:
     chart: cert-manager
     repoURL: https://charts.jetstack.io
-    targetRevision: v0.15.0-alpha.1
+    targetRevision: v0.15.0-alpha.2
   finalizer:
     enabled: false
   spec:
