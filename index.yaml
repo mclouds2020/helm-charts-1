@@ -3,9 +3,9 @@ entries:
   cert-manager-issuer:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-04-24T01:47:56.973695848Z"
+    created: "2020-04-24T01:57:22.302031495Z"
     description: A Helm chart for Kubernetes
-    digest: edb4dc246825044cb1a53dfc923b22d1cf0cdf534622f2d7ee6dccdda6fe96ea
+    digest: a3241e9c5b478056e05fae57345d9e7437bd6a829931e2cb0034a7f8dd049be0
     name: cert-manager-issuer
     type: application
     urls:
@@ -14,9 +14,9 @@ entries:
   crds:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-04-24T01:47:56.97711852Z"
+    created: "2020-04-24T01:57:22.30512987Z"
     description: A Helm chart for Kubernetes
-    digest: 68ccb66f540db3633d7f316300fe1d04074285570800fe314081bfb6b8771402
+    digest: 5276b0544c5e53060a955c70084199c0aa393dd91b9e78d06ed67a7718b234ee
     name: crds
     type: application
     urls:
@@ -25,9 +25,9 @@ entries:
   infra-apps:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-04-24T01:47:56.979785911Z"
+    created: "2020-04-24T01:57:22.307296876Z"
     description: A Helm chart for Kubernetes
-    digest: 256a4d1b8be5fa3ddaa4f133239ae875040c32b96e92351e6bf1bbe683fd5996
+    digest: 965afd9e21657027bfe1c7db2e535ff1c128e55440a7921a9b2c55ffec7bfb30
     name: infra-apps
     type: application
     urls:
@@ -35,9 +35,9 @@ entries:
     version: 0.1.0
   vault:
   - apiVersion: v2
-    created: "2020-04-24T01:47:56.982366259Z"
+    created: "2020-04-24T01:57:22.310042602Z"
     description: Install and configure Vault on Kubernetes.
-    digest: cdc422b6975d40638f8b4d001f924e708efbf3e7f7959619b801ca0759758f57
+    digest: 8ec458c30ce969b277eb87fa48bb5a8683f5702ed4873249238e9617f292c5d9
     home: https://www.vaultproject.io
     icon: https://github.com/hashicorp/vault/raw/f22d202cde2018f9455dec755118a9b84586e082/Vault_PrimaryLogo_Black.png
     name: vault
@@ -48,4 +48,4 @@ entries:
     urls:
     - https://mkorejo.github.io/helm_charts/releases/vault-0.5.0.tgz
     version: 0.5.0
-generated: "2020-04-24T01:47:56.973216491Z"
+generated: "2020-04-24T01:57:22.301356496Z"
