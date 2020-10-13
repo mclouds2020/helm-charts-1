@@ -3,9 +3,9 @@ entries:
   cert-manager-issuer:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-10-13T00:29:15.083354485Z"
+    created: "2020-10-13T12:54:32.404559759Z"
     description: A Helm chart for Kubernetes
-    digest: 97f971950f49ff0a05f6fe50393d9d442088324b845741b1a6f1527c41b50489
+    digest: 24998af03621337170ebdc160b5beeed21a0643379a2e02bcff9875f972c1d8d
     name: cert-manager-issuer
     type: application
     urls:
@@ -14,9 +14,9 @@ entries:
   crds:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-10-13T00:29:15.085896412Z"
+    created: "2020-10-13T12:54:32.407651453Z"
     description: A Helm chart for Kubernetes
-    digest: 69784fe6d3c3d3955cdee7d85c2457998b96c3ca1b5bd9a1e2af79b290ab5d4d
+    digest: defe6cbc2a8693a9afab1ad7716bab3c818477b81ab66ae5313f2ce3899f5329
     name: crds
     type: application
     urls:
@@ -25,9 +25,9 @@ entries:
   infra-apps:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-10-13T00:29:15.087265768Z"
+    created: "2020-10-13T12:54:32.409552411Z"
     description: A Helm chart for Kubernetes
-    digest: ef1bca9989cf7cd46a4c99ae57412d54a2a9a2663b7cf7d29cd52b0c2d679a91
+    digest: 06fcdcd7bf0880e9d7c1d30ca489570184c4913033c7e989754b9d335c7ae426
     name: infra-apps
     type: application
     urls:
@@ -35,9 +35,9 @@ entries:
     version: 0.1.0
   vault:
   - apiVersion: v2
-    created: "2020-10-13T00:29:15.088867024Z"
+    created: "2020-10-13T12:54:32.411693853Z"
     description: Install and configure Vault on Kubernetes.
-    digest: 83844ca642e6b0c1060dbf1af20f65f2f6adabeb2135783d29c3beef787e98a3
+    digest: b7a030e689e319fefa1dc2b4b052965d26478675120dc9ecb1db74b8f0899a48
     home: https://www.vaultproject.io
     icon: https://github.com/hashicorp/vault/raw/f22d202cde2018f9455dec755118a9b84586e082/Vault_PrimaryLogo_Black.png
     name: vault
@@ -48,4 +48,4 @@ entries:
     urls:
     - https://mkorejo.github.io/helm_charts/releases/vault-0.5.0.tgz
     version: 0.5.0
-generated: "2020-10-13T00:29:15.082921463Z"
+generated: "2020-10-13T12:54:32.403973283Z"
