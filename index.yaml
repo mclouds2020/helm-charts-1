@@ -3,9 +3,9 @@ entries:
   cert-manager-issuer:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-10-13T12:54:32.404559759Z"
+    created: "2020-10-13T23:22:01.560263801Z"
     description: A Helm chart for Kubernetes
-    digest: 24998af03621337170ebdc160b5beeed21a0643379a2e02bcff9875f972c1d8d
+    digest: e4d17504ed9992f743b2377b2dd462fa75ff8b882b312cddf7ff9fac7e9906ff
     name: cert-manager-issuer
     type: application
     urls:
@@ -14,7 +14,17 @@ entries:
   crds:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-10-13T12:54:32.407651453Z"
+    created: "2020-10-13T23:22:01.565893916Z"
+    description: A Helm chart for Kubernetes
+    digest: 98098fd71966b93b1150709ff230246802385b391d6220f2faecf32acc37ca3c
+    name: crds
+    type: application
+    urls:
+    - https://mkorejo.github.io/helm_charts/releases/crds-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2020-10-13T23:22:01.563404148Z"
     description: A Helm chart for Kubernetes
     digest: defe6cbc2a8693a9afab1ad7716bab3c818477b81ab66ae5313f2ce3899f5329
     name: crds
@@ -25,9 +35,9 @@ entries:
   infra-apps:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-10-13T12:54:32.409552411Z"
+    created: "2020-10-13T23:22:01.568081613Z"
     description: A Helm chart for Kubernetes
-    digest: 06fcdcd7bf0880e9d7c1d30ca489570184c4913033c7e989754b9d335c7ae426
+    digest: 5b5860246fbae009db8d62722ab8dead03fcf6dc40d3fa1cc8944eb4271728cd
     name: infra-apps
     type: application
     urls:
@@ -35,9 +45,9 @@ entries:
     version: 0.1.0
   vault:
   - apiVersion: v2
-    created: "2020-10-13T12:54:32.411693853Z"
+    created: "2020-10-13T23:22:01.571072838Z"
     description: Install and configure Vault on Kubernetes.
-    digest: b7a030e689e319fefa1dc2b4b052965d26478675120dc9ecb1db74b8f0899a48
+    digest: 0a5e37c1c7305a4140849e6e2d1b470a7836aa14239dc48640d767e470a58054
     home: https://www.vaultproject.io
     icon: https://github.com/hashicorp/vault/raw/f22d202cde2018f9455dec755118a9b84586e082/Vault_PrimaryLogo_Black.png
     name: vault
@@ -48,4 +58,4 @@ entries:
     urls:
     - https://mkorejo.github.io/helm_charts/releases/vault-0.5.0.tgz
     version: 0.5.0
-generated: "2020-10-13T12:54:32.403973283Z"
+generated: "2020-10-13T23:22:01.559834948Z"
