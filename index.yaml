@@ -3,9 +3,9 @@ entries:
   cert-manager-issuer:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-10-18T04:10:48.532476162Z"
+    created: "2020-10-18T06:31:38.651696918Z"
     description: A Helm chart for Kubernetes
-    digest: 3f6c30ce286adeb7f575a9a7da72e9969ff81efcad4e0189207bdfd895593371
+    digest: 7018ae1acef191d138d25485000b77efb7d7c8d4cde6334edefa021992ec6c52
     name: cert-manager-issuer
     type: application
     urls:
@@ -14,9 +14,9 @@ entries:
   crds:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-10-18T04:10:48.538724753Z"
+    created: "2020-10-18T06:31:38.657959554Z"
     description: A Helm chart for Kubernetes
-    digest: 8a0a305f3be07beab599eda86dde2fdc1f04be62cf6f1d1f86af8347f6e6bb59
+    digest: a6b67225307856657396a37976493ca4c66105ce1434856d6be9cc939e33374a
     name: crds
     type: application
     urls:
@@ -24,7 +24,7 @@ entries:
     version: 0.3.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-10-18T04:10:48.536687372Z"
+    created: "2020-10-18T06:31:38.655921552Z"
     description: A Helm chart for Kubernetes
     digest: caa15f545004a5df98e7c78defae0b4f7323be3a71c455ac7f1225356fba872f
     name: crds
@@ -34,7 +34,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-10-18T04:10:48.534755372Z"
+    created: "2020-10-18T06:31:38.654003171Z"
     description: A Helm chart for Kubernetes
     digest: defe6cbc2a8693a9afab1ad7716bab3c818477b81ab66ae5313f2ce3899f5329
     name: crds
@@ -45,9 +45,9 @@ entries:
   infra-apps:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-10-18T04:10:48.540766478Z"
+    created: "2020-10-18T06:31:38.659894284Z"
     description: A Helm chart for Kubernetes
-    digest: ae1399239066e2e5ce562f56d430ac877ab2ed51dfd9a464254d9cfc6c52f292
+    digest: 6cf50145669c8490904ea69d8aab4925ffcafdbdf3bdd8d8303bdc870dab48ca
     name: infra-apps
     type: application
     urls:
@@ -55,9 +55,9 @@ entries:
     version: 0.1.0
   vault:
   - apiVersion: v2
-    created: "2020-10-18T04:10:48.542389502Z"
+    created: "2020-10-18T06:31:38.661472464Z"
     description: Install and configure Vault on Kubernetes.
-    digest: 54395f02c26041424e6e0de593e18e2d904b2a34038cb36f4478973ec764e403
+    digest: 6986fe5752b1a43caccd836c35ff59fccaffc97b52f6f7d847d6552a6285fcbe
     home: https://www.vaultproject.io
     icon: https://github.com/hashicorp/vault/raw/f22d202cde2018f9455dec755118a9b84586e082/Vault_PrimaryLogo_Black.png
     name: vault
@@ -68,4 +68,4 @@ entries:
     urls:
     - https://mkorejo.github.io/helm_charts/releases/vault-0.5.0.tgz
     version: 0.5.0
-generated: "2020-10-18T04:10:48.532111238Z"
+generated: "2020-10-18T06:31:38.651336526Z"
