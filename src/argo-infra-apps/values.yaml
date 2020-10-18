@@ -7,6 +7,8 @@ general:
     namespace: nginx-ingress
     source:
       chart: nginx-ingress
+    # repoURL: https://helm.nginx.com/stable
+    # targetRevision: 0.5.0
       repoURL: https://kubernetes-charts.storage.googleapis.com/
       targetRevision: 1.36.2
 
@@ -234,11 +236,11 @@ vault:
           kubernetes.io/ingress.class: "nginx-public"
           cert-manager.io/cluster-issuer: "letsencrypt-prod-route53"
         hosts:
-          - host: vault-sandbox.coda.run
+          - host: vault-sandbox.devops.coda.run
         tls:
           - secretName: vault-tls
             hosts:
-              - vault-sandbox.coda.run
+              - vault-sandbox.devops.coda.run
     ui:
       enabled: true
     nameOverride: ""
