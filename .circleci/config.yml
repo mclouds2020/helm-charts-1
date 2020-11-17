@@ -17,13 +17,13 @@ jobs:
             done
       - run:
           name: Re-index the repository
-          command: helm repo index . --url https://mkorejo.github.io/helm_charts
+          command: helm repo index . --url https://mkorejo.github.io/helm-charts
       - add_ssh_keys
       - run:
           name: Commit and push
           command: |
             git config --global user.email "charts_uploader@blackhole.net"
-            git config --global user.name "helm_charts Uploader"
+            git config --global user.name "helm-charts Uploader"
             git add index.yaml
             git add releases/*.tgz
             git commit -m "CircleCI Helm chart upload [skip ci]"
