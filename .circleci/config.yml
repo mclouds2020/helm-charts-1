@@ -36,4 +36,4 @@ workflows:
       - main:
           filters:
             branches:
-              only: master
+              only: circleci
